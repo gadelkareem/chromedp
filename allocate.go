@@ -116,6 +116,12 @@ func (p *ExecAllocator) Allocate(ctx context.Context) (*Browser, error) {
 		p.wg.Done()
 	}()
 
+	c := FromContext(ctx)
+	if c.Browser != nil {
+		c.Browser.userDataDir = dataDir
+		return c.Browser, nil
+	}
+
 	cmd = exec.CommandContext(ctx, p.execPath, args...)
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
